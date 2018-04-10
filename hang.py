@@ -21,13 +21,12 @@ def loadWords():
 
 
 def isWordGuessed(secretWord, lettersGuessed):
-    secretLetters = []
-
-#    for letter in secretWord:
-#        if letter in secretLetters:
-#            secretLetters.append(letter)
-#        else:
-#            pass
+    # secretLetters = []
+    # for letter in secretWord:
+    #    if letter in secretLetters:
+    #        secretLetters.append(letter)
+    #    else:
+    #        pass
 
     for letter in secretWord:
         if letter in lettersGuessed:
@@ -51,21 +50,31 @@ def getAvailableLetters():
     return available
 
 
+def updateAvailableLetters(available, lettersGuessed):
+    for letter in lettersGuessed:
+        available = available.replace(letter, '')
+    return available
+
+
+def isLetterValid(letter, lettersGuessed):
+    if letter in lettersGuessed:
+        return False
+    return true
+    
+
 def hangman(secretWord):
 
     guesses = 8
     lettersGuessed = []
-    print 'Welcome to the game, Hangam!'
+    print 'Welcome to the game, Hangman!'
     print 'I am thinking of a word that is', len(secretWord), ' letters long.'
     print '-------------'
 
     while isWordGuessed(secretWord, lettersGuessed) is False and guesses > 0:
-        print 'You have ', guesses, 'guesses left.'
 
+        print 'You have ', guesses, 'guesses left.'
         available = getAvailableLetters()
-        for letter in available:
-            if letter in lettersGuessed:
-                available = available.replace(letter, '')
+        available = updateAvailableLetters(available, lettersGuessed)
 
         print 'Available letters', available
         letter = raw_input('Please guess a letter: ')
@@ -77,17 +86,17 @@ def hangman(secretWord):
                 else:
                     guessed += '_ '
             print 'Oops! You have already guessed that letter: ', guessed
+
         elif letter in secretWord:
             lettersGuessed.append(letter)
-
             guessed = getGuessedWord()
             for letter in secretWord:
                 if letter in lettersGuessed:
                     guessed += letter
                 else:
                     guessed += '_ '
-
             print 'Good Guess: ', guessed
+
         else:
             guesses -= 1
             lettersGuessed.append(letter)
