@@ -24,13 +24,18 @@ def chooseWord(wordlist, guesses):
     chosenWord = random.choice(wordlist)
     if isWordValid(chosenWord, guesses):
         return chosenWord
-    wordlist.remove(chosenWord)
     chooseWord(wordlist, guesses)
 
 
 def isWordValid(word, guesses):
-    if len(word) > guesses:
+    letter = string.ascii_lowercase
+    diffLetters = []
+    for letter in word:
+        if letter not in diffLetters:
+            diffLetters.append(letter)
+    if len(diffLetters) > guesses:
         return False
+    print 'There are', len(diffLetters), 'different letters'
     return True
 
 
@@ -44,16 +49,15 @@ def isWordGuessed(secretWord, lettersGuessed):
 
 
 def getAvailableLetters():
-    import string
     # 'abcdefghijklmnopqrstuvwxyz'
     available = string.ascii_lowercase
     return available
 
 
-def updateAvailableLetters(available, lettersGuessed):
+def updateAvailableLetters(availableLetters, lettersGuessed):
     for letter in lettersGuessed:
-        available = available.replace(letter, '')
-    return available
+        availableLetters = availableLetters.replace(letter, '')
+    return availableLetters
 
 
 def isLetterValid(letter, lettersGuessed):
@@ -75,16 +79,17 @@ def updateHiddenWord(lettersGuessed, secretWord):
 def hangman(secretWord):
     guesses = 8
     lettersGuessed = []
+
     print 'Welcome to the game, Hangman!'
     print 'I am thinking of a word that is', len(secretWord), ' letters long.'
     print '-------------'
+
     hiddenWord = updateHiddenWord(lettersGuessed, secretWord)
+    availableLetters = getAvailableLetters()
 
     while isWordGuessed(secretWord, lettersGuessed) is False and guesses > 0:
         print 'You have ', guesses, 'guesses left.'
-        available = getAvailableLetters()
-
-        print 'Available letters', available
+        print 'Available letters', availableLetters
         letter = raw_input('Please guess a letter: ')
 
         if isLetterValid(letter, lettersGuessed) is True:
@@ -100,7 +105,7 @@ def hangman(secretWord):
         else:
             print 'Oops! You have already guessed that letter: ', hiddenWord
 
-        available = updateAvailableLetters(available, lettersGuessed)
+        availableLetters = updateAvailableLetters(availableLetters, lettersGuessed)
         print '------------'
 
     if isWordGuessed(secretWord, lettersGuessed) is True:
