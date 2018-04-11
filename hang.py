@@ -2,6 +2,7 @@ import random
 import string
 
 WORDLIST_FILENAME = "words.txt"
+guesses = 8
 
 
 def loadWords():
@@ -9,7 +10,7 @@ def loadWords():
     Depending on the size of the word list, this function may
     take a while to finish.
     """
-    print 'Loading word list from file...'
+    print "Loading word list from file..."
     # inFile: file
     inFile = open(WORDLIST_FILENAME, 'r', 0)
     # line: string
@@ -76,8 +77,7 @@ def updateHiddenWord(lettersGuessed, secretWord):
     return hiddenWord
 
 
-def hangman(secretWord):
-    guesses = 8
+def hangman(secretWord, guesses):
     lettersGuessed = []
 
     print 'Welcome to the game, Hangman!'
@@ -115,5 +115,5 @@ def hangman(secretWord):
 
 
 wordlist = loadWords()
-secretWord = chooseWord(wordlist, 8).lower()
-hangman(secretWord)
+secretWord = chooseWord(wordlist, guesses).lower()
+hangman(secretWord, guesses)
