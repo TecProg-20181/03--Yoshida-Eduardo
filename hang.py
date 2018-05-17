@@ -1,6 +1,7 @@
 import random
 import string
 import os
+from types import *
 
 WORDLIST_FILENAME = "words.txt"
 guesses = 8
@@ -12,7 +13,7 @@ def loadWords():
     inFile = open(WORDLIST_FILENAME, 'r', 0)
     # line: string
     line = inFile.readline()
-    # wordlist: list of strings
+    # wordlist: list of stripython letter digitngs
     wordlist = string.split(line)
     print "  ", len(wordlist), "words loaded."
 
@@ -90,9 +91,17 @@ def updateAvailableLetters(availableLetters, lettersGuessed):
 
 
 def isLetterNew(letter, lettersGuessed):
-    if letter in lettersGuessed:
-        return False
-    return True
+    if(len(letter) == 1):
+        if letter in lettersGuessed:
+            return False
+        return True
+
+
+def isLetterValid(letter):
+    if(letter in string.ascii_lowercase and len(letter) == 1):
+        return True
+    print "Invalid letter"
+    return False
 
 
 def updateHiddenWord(lettersGuessed, secretWord):
@@ -124,20 +133,22 @@ def hangman(secretWord, guesses):
         letter = raw_input('Please guess a letter: ')
         letter = letter.lower()
 
-        if isLetterValid(letter, lettersGuessed) is True:
-            if letter in secretWord:
-                print 'Good Guess: ',
-                lettersGuessed.append(letter)
-                hiddenWord = updateHiddenWord(lettersGuessed, secretWord)
-                print hiddenWord
+        if isLetterValid(letter):
+            if isLetterNew(letter, lettersGuessed):
+                if letter in secretWord:
+                    print 'Good Guess: ',
+                    lettersGuessed.append(letter)
+                    hiddenWord = updateHiddenWord(lettersGuessed, secretWord)
+                    print hiddenWord
+                else:
+                    guesses -= 1
+                    lettersGuessed.append(letter)
+                    print 'Oops! That letter is not in my word: ', hiddenWord
             else:
-                guesses -= 1
-                lettersGuessed.append(letter)
-                print 'Oops! That letter is not in my word: ', hiddenWord
-        else:
-            print 'Oops! You have already guessed that letter: ', hiddenWord
+                print 'Oops! You have already guessed that letter: ', hiddenWord
 
-        availableLetters = updateAvailableLetters(availableLetters, lettersGuessed)
+        availableLetters = updateAvailableLetters(availableLetters,
+                                                  lettersGuessed)
         print '------------'
 
     if isWordGuessed(secretWord, lettersGuessed) is True:
@@ -149,8 +160,9 @@ def hangman(secretWord, guesses):
 if(isFileValid()):
     wordlist = loadWords()
 else:
-    print("Wordlis could not be loaded")
+    print("Wordlist could not be loaded")
     exit()
 
 secretWord = chooseWord(wordlist, guesses).lower()
+
 hangman(secretWord, guesses)
