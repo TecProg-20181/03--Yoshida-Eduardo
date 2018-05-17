@@ -1,5 +1,6 @@
 import random
 import string
+import os
 
 WORDLIST_FILENAME = "words.txt"
 guesses = 8
@@ -18,9 +19,32 @@ def loadWords():
     return wordlist
 
 
+def isFileTxt():
+    if WORDLIST_FILENAME.endswith(".txt"):
+        return True
+    print "Invalid file extension"
+    return False
+
+
+def isFileEmpty():
+    return os.stat(WORDLIST_FILENAME).st_size == 0
+
+
+def isFileValid():
+    if(isFileTxt() and isFileEmpty() is False):
+        return True
+    return False
+
+
+def isWordList(wordList):
+    if(isinstance(wordList, list)):
+        return True
+    return False
+
+
 def checkInput(letter):
     if(len(letter) == 1):
-        if(letter.isalpha):
+        if(letter.isalpha()):
             return True
     return False
 
@@ -65,7 +89,7 @@ def updateAvailableLetters(availableLetters, lettersGuessed):
     return availableLetters
 
 
-def isLetterValid(letter, lettersGuessed):
+def isLetterNew(letter, lettersGuessed):
     if letter in lettersGuessed:
         return False
     return True
@@ -81,13 +105,16 @@ def updateHiddenWord(lettersGuessed, secretWord):
     return hiddenWord
 
 
-def hangman(secretWord, guesses):
-    lettersGuessed = []
-
+def start(secretWord):
     print 'Welcome to the game, Hangman!'
     print 'I am thinking of a word that is', len(secretWord), ' letters long.'
     print '-------------'
 
+
+def hangman(secretWord, guesses):
+    start(secretWord)
+
+    lettersGuessed = []
     hiddenWord = updateHiddenWord(lettersGuessed, secretWord)
     availableLetters = getAvailableLetters()
 
@@ -95,6 +122,7 @@ def hangman(secretWord, guesses):
         print 'You have ', guesses, 'guesses left.'
         print 'Available letters', availableLetters
         letter = raw_input('Please guess a letter: ')
+        letter = letter.lower()
 
         if isLetterValid(letter, lettersGuessed) is True:
             if letter in secretWord:
@@ -118,6 +146,11 @@ def hangman(secretWord, guesses):
         print 'Sorry, you ran out of guesses. The word was ', secretWord, '.'
 
 
-wordlist = loadWords()
+if(isFileValid()):
+    wordlist = loadWords()
+else:
+    print("Wordlis could not be loaded")
+    exit()
+
 secretWord = chooseWord(wordlist, guesses).lower()
 hangman(secretWord, guesses)
