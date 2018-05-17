@@ -6,10 +6,6 @@ guesses = 8
 
 
 def loadWords():
-    """
-    Depending on the size of the word list, this function may
-    take a while to finish.
-    """
     print "Loading word list from file..."
     # inFile: file
     inFile = open(WORDLIST_FILENAME, 'r', 0)
@@ -18,7 +14,15 @@ def loadWords():
     # wordlist: list of strings
     wordlist = string.split(line)
     print "  ", len(wordlist), "words loaded."
+
     return wordlist
+
+
+def checkInput(letter):
+    if(len(letter) == 1):
+        if(letter.isalpha):
+            return True
+    return False
 
 
 def chooseWord(wordlist, guesses):
