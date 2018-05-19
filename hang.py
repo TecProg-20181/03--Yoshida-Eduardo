@@ -60,13 +60,15 @@ def chooseWord(wordlist, guesses):
 def isWordValid(word, guesses):
     letter = string.ascii_lowercase
     diffLetters = []
-    for letter in word:
-        if letter not in diffLetters:
-            diffLetters.append(letter)
-    if len(diffLetters) > guesses:
-        return False
-    print 'There are', len(diffLetters), 'different letters'
-    return True
+    if(word.isalpha()):
+        for letter in word:
+            if letter not in diffLetters:
+                diffLetters.append(letter)
+        if len(diffLetters) > guesses:
+            return False
+        print 'There are', len(diffLetters), 'different letters'
+        return True
+    return false
 
 
 def isWordGuessed(secretWord, lettersGuessed):
@@ -88,6 +90,12 @@ def updateAvailableLetters(availableLetters, lettersGuessed):
     for letter in lettersGuessed:
         availableLetters = availableLetters.replace(letter, '')
     return availableLetters
+
+
+def checkAvailableLetters(availableLetters):
+    if(availableLetters.isalpha()):
+        return True
+    return False
 
 
 def isLetterNew(letter, lettersGuessed):
@@ -145,10 +153,12 @@ def hangman(secretWord, guesses):
                     lettersGuessed.append(letter)
                     print 'Oops! That letter is not in my word: ', hiddenWord
             else:
-                print 'Oops! You have already guessed that letter: ', hiddenWord
+                print 'Oops! You have already guessed that letter:', hiddenWord
 
-        availableLetters = updateAvailableLetters(availableLetters,
-                                                  lettersGuessed)
+        if(checkAvailableLetters(updateAvailableLetters(availableLetters,
+                                                        lettersGuessed))):
+            availableLetters = updateAvailableLetters(availableLetters,
+                                                      lettersGuessed)
         print '------------'
 
     if isWordGuessed(secretWord, lettersGuessed) is True:
